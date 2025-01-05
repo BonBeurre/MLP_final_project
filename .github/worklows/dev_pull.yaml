@@ -1,4 +1,4 @@
-name: CI/CD - Pull Request to Dev
+name: CI/CD - Pull to Dev
 
 on:
   pull_request:
