@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Welcome to the Placeholder App</h1>
+        <h1>Welcome to the Placeholder Ap</h1>
         <p>This is a React-based placeholder app for your CI/CD pipeline.</p>
       </header>
     </div>
