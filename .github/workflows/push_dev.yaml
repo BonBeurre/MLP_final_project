@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Push to Staging Branch
       run: |
-        git fetch origin
+        git fetch origin dev
         git checkout staging
         git merge dev
         git push origin staging
