@@ -1,89 +1,92 @@
-name: CI/CD
+name: CI/CD Pipeline
 
 on:
+  pull_request:
+    branches: [ dev ]
   push:
-    branches:
-      - dev
+    branches: [ dev, staging, main ]
 
 jobs:
-  push-to-dev:
+  pr-checks:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    permissions: write-all
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v4
+      
+      - name: Build application
+        run: |
+          # Add your build commands here
+          echo "Building application..."
+          
+      - name: Run integration tests
+        run: |
+          # Add your test commands here
+          echo "Running integration tests..."
 
-    - name: Push to Staging Branch
-      run: |
-        git fetch origin
-        git checkout staging
-        git merge dev
-        git push origin staging
-  
-  push-to-staging:
+  dev-to-staging:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0  
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Push to staging
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout staging
+          git merge dev
+          git push origin staging
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Run All Tests
-      run: npm test
-
-    - name: Push to Production
-      run: |
-        git fetch origin
-        git checkout main
-        git merge staging
-        git push origin main
-    
-  push-to-production:
+  staging-to-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
-
+    needs: dev-to-staging
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      
+      - name: Build application
+        run: |
+          # Add your build commands here
+          echo "Building application..."
+          
+      - name: Run all tests
+        run: |
+          # Add your test commands here
+          echo "Running all tests..."
+          
+      - name: Push to main
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout main
+          git merge staging
+          git push origin main
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Run All Tests
-      run: npm test
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Build and push
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/mlp-final-project:latest
-
-    - name: Deploy to Cloud
-      run: |
-        echo "Deploying to cloud platform..."
+  deploy-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: staging-to-prod
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            your-dockerhub-username/your-app:latest
+            your-dockerhub-username/your-app:${{ github.sha }}
+            
+      - name: Deploy to production
+        run: |
+          # Add your deployment commands here
+          echo "Deploying to production..."
