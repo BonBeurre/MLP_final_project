@@ -2,6 +2,17 @@ from fastapi import FastAPI
 import mlflow.pyfunc
 import pandas as pd
 import os
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3002"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configurer l'URI MLflow pour DagsHub
 mlflow.set_tracking_uri("https://dagshub.com/djayos/my-first-repo.mlflow")
@@ -12,9 +23,6 @@ os.environ["MLFLOW_TRACKING_PASSWORD"] = "21998e1af3bfa82f989a91f83e26d6c3e07248
 
 # Charger le modèle enregistré comme "Production" dans le Model Registry
 model = mlflow.pyfunc.load_model("models:/IrisModelRegistry/Production")
-
-# Initialiser FastAPI
-app = FastAPI()
 
 # Endpoint pour la prédictionnb
 @app.post("/predict/")
