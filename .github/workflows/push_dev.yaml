@@ -1,0 +1,28 @@
+name: CI/CD - Push to Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  push-to-staging:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0   # This ensures you have all history for all branches
+
+    - name: Configure Git
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'github-actions@github.com'
+
+    - name: Push to Staging Branch
+      run: |
+        git fetch origin
+        git checkout staging
+        git merge dev
+        git push origin staging
