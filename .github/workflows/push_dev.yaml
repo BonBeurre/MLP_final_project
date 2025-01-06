@@ -40,7 +40,6 @@ jobs:
           git push origin staging
 
   staging-to-prod:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     needs: dev-to-staging
     steps:
@@ -65,7 +64,6 @@ jobs:
           git push origin main
 
   deploy-prod:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: staging-to-prod
     steps:
