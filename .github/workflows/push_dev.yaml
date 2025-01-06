@@ -1,0 +1,18 @@
+name: CI/CD - Push to Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  push-to-staging:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Push to Staging Branch
+      run: |
+        git fetch origin
+        git checkout staging
+        git merge dev
+        git push origin staging
