@@ -1,7 +1,7 @@
 name: CI/CD - Push to Main
 
 on:
-  push:
+  merge:
     branches:
       - main
 
