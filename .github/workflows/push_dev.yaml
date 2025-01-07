@@ -30,7 +30,7 @@ jobs:
           if [ "${{ matrix.language }}" = "python" ]; then
             pytest backend/tests/test_unit.py
           else
-            npm test --prefix frontend -- --testPathPattern=frontend/src/__tests__/unit_tests.js
+            npm test --prefix frontend -- frontend/src/__tests__/unit_tests.js
           fi
 
   dev-to-staging:
