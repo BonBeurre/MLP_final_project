@@ -118,9 +118,6 @@ jobs:
             dockerfile: backend/Dockerfile
             image: adibon/back_mlp:latest
             koyeb_id: 722684c0-de7e-40a8-900b-0de8ebd87fd3
-            env_vars: |
-              MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }}
-              MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }}
     
     steps:
       - uses: actions/checkout@v4
@@ -146,12 +143,4 @@ jobs:
           github_token: "${{ secrets.PAT_TOKEN }}"
       
       - name: Deploy ${{ matrix.service.name }} to Koyeb
-        if: matrix.service.name == 'frontend'
         run: koyeb service redeploy ${{ matrix.service.koyeb_id }}
-
-      - name: Deploy backend to Koyeb with env vars
-        if: matrix.service.name == 'backend'
-        run: |
-          koyeb service update ${{ matrix.service.koyeb_id }} \
-            --env ${{ matrix.service.env_vars }} \
-            && koyeb service redeploy ${{ matrix.service.koyeb_id }}
