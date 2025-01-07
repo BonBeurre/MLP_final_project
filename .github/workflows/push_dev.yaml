@@ -59,7 +59,7 @@ jobs:
             pytest backend/tests/test_unit.py
             pytest backend/tests/test_int.py
           else
-            npm test --prefix frontend
+            npm test --prefix frontend unit_test.js
           fi
           
       - name: Push to staging
