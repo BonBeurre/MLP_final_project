@@ -113,20 +113,27 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           
-      - name: Build and push Docker images
+      - name: Build and push frontend Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: frontend
+          dockerfile: frontend/Dockerfile
+          tags: adibon/front_mlp:latest
           push: true
-          tags: |
-            your-dockerhub-username/your-app:latest
-            your-dockerhub-username/your-app:${{ github.sha }}
-            
-      - name: Run tests
-        run: |
-          echo "Dummy test step for deploy-prod..."
+  
+      - name: Build and push backend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          dockerfile: backend/Dockerfile
+          tags: adibon/back_mlp:latest
+          push: true
           
-      - name: Deploy to production
-        run: |
-          # Add your deployment commands here
-          echo "Deploying to production..."
+      - name: Install and configure the Koyeb CLI
+        uses: koyeb-community/koyeb-actions@v2
+        with:
+          api_token: "${{ secrets.KOYEB_TOKEN }}"
+          github_token: "${{ secrets.PAT_TOKEN }}"
+
+      - name: Deploy to Koyeb
+        run: koyeb service redeploy app_name/service_name
