@@ -10,26 +10,56 @@ jobs:
   pr-checks:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        language: [python, node]
     steps:
       - uses: actions/checkout@v4
       
       - name: Build application
         run: |
-          # Add your build commands here
-          echo "Building application..."
+          if [ "${{ matrix.language }}" = "python" ]; then
+            pip install -r backend/requirements.txt
+          else
+            npm install --prefix frontend
+            npm run build --prefix frontend
+          fi
           
-      - name: Run integration tests
+      - name: Run tests
         run: |
-          # Add your test commands here
-          echo "Running integration tests..."
+          if [ "${{ matrix.language }}" = "python" ]; then
+            pytest backend/tests/test_unit.py
+          else
+            npm test --prefix frontend -- --testPathPattern=frontend/src/__tests__/unit_tests.js
+          fi
 
   dev-to-staging:
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        language: [python, node]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          
+      - name: Build application
+        run: |
+          if [ "${{ matrix.language }}" = "python" ]; then
+            pip install -r backend/requirements.txt
+          else
+            npm install --prefix frontend
+            npm run build --prefix frontend
+          fi
+          
+      - name: Run tests
+        run: |
+          if [ "${{ matrix.language }}" = "python" ]; then
+            pytest backend/tests/test_unit.py
+          else
+            npm test --prefix frontend -- --testPathPattern=frontend/src/__tests__/unit_tests.js
+          fi
           
       - name: Push to staging
         run: |
@@ -57,6 +87,10 @@ jobs:
         run: |
           # Add your test commands here
           echo "Running all tests..."
+          
+      - name: Run tests
+        run: |
+          echo "Dummy test step for staging-to-prod..."
           
       - name: Push to main
         run: |
@@ -88,6 +122,10 @@ jobs:
             your-dockerhub-username/your-app:latest
             your-dockerhub-username/your-app:${{ github.sha }}
             
+      - name: Run tests
+        run: |
+          echo "Dummy test step for deploy-prod..."
+          
       - name: Deploy to production
         run: |
           # Add your deployment commands here
