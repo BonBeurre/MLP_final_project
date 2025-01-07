@@ -57,6 +57,7 @@ jobs:
         run: |
           if [ "${{ matrix.language }}" = "python" ]; then
             pytest backend/tests/test_unit.py
+            pytest backend/tests/test_int.py
           else
             npm test --prefix frontend
           fi
@@ -104,6 +105,20 @@ jobs:
   deploy-prod:
     runs-on: ubuntu-latest
     needs: staging-to-prod
+    strategy:
+      matrix:
+        service: 
+          - name: frontend
+            context: frontend
+            dockerfile: frontend/Dockerfile
+            image: adibon/front_mlp:latest
+            koyeb_id: d928220f-e55d-4a56-ab25-8646203fbc27
+          - name: backend
+            context: backend
+            dockerfile: backend/Dockerfile
+            image: adibon/back_mlp:latest
+            koyeb_id: 722684c0-de7e-40a8-900b-0de8ebd87fd3
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -112,28 +127,20 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
-      - name: Build and push frontend Docker image
+      
+      - name: Build and push ${{ matrix.service.name }} Docker image
         uses: docker/build-push-action@v5
         with:
-          context: frontend
-          dockerfile: frontend/Dockerfile
-          tags: adibon/front_mlp:latest
+          context: ${{ matrix.service.context }}
+          dockerfile: ${{ matrix.service.dockerfile }}
+          tags: ${{ matrix.service.image }}
           push: true
-  
-      - name: Build and push backend Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: backend
-          dockerfile: backend/Dockerfile
-          tags: adibon/back_mlp:latest
-          push: true
-          
+      
       - name: Install and configure the Koyeb CLI
         uses: koyeb-community/koyeb-actions@v2
         with:
           api_token: "${{ secrets.KOYEB_TOKEN }}"
           github_token: "${{ secrets.PAT_TOKEN }}"
-
-      - name: Deploy to Koyeb
-        run: koyeb service redeploy app_name/service_name
+      
+      - name: Deploy ${{ matrix.service.name }} to Koyeb
+        run: koyeb service redeploy ${{ matrix.service.koyeb_id }}
