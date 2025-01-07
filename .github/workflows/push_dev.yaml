@@ -86,6 +86,9 @@ jobs:
         
       - name: Run tests
         run: |
+            sudo apt-get update
+            sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxcomposite1 libxrandr2 libgbm1 libpango-1.0-0 libasound2
+            npm install puppeteer --prefix frontend
             npm test --prefix frontend e2e_test.js
           
       - name: Push to main
