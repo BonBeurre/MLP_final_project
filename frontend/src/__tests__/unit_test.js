@@ -51,7 +51,7 @@ describe("App Component", () => {
         expect(prediction).toBeInTheDocument();
 
         expect(global.fetch).toHaveBeenCalledTimes(1);
-        expect(global.fetch).toHaveBeenCalledWith("http://localhost:8000/predict/", {
+        expect(global.fetch).toHaveBeenCalledWith("https://soft-serena-adibon-43b0a5e4.koyeb.app/predict/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

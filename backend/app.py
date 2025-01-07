@@ -1,18 +1,22 @@
-from fastapi import FastAPI
+import os
+from fastapi import HTTPException, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import mlflow.pyfunc
 import pandas as pd
-import os
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import HTTPException
 
 
 from utils import is_correct_format
 
 app = FastAPI()
 
+origins = [
+    "https://easy-dominica-adibon-6ea94c08.koyeb.app",  # Your frontend origin
+]
+
+# Add CORS middleware to allow specific origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
