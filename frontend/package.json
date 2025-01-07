@@ -37,6 +37,6 @@
     ]
   },
   "devDependencies": {
-    "puppeteer": "^23.11.1"
+
   }
 }

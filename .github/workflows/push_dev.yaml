@@ -81,17 +81,12 @@ jobs:
       
       - name: Build application
         run: |
-          # Add your build commands here
-          echo "Building application..."
-          
-      - name: Run all tests
-        run: |
-          # Add your test commands here
-          echo "Running all tests..."
-          
+            npm install --prefix frontend
+            npm run build --prefix frontend
+        
       - name: Run tests
         run: |
-          echo "Dummy test step for staging-to-prod..."
+            echo "No tests to run for production deployment"
           
       - name: Push to main
         run: |
