@@ -112,12 +112,12 @@ jobs:
             context: frontend
             dockerfile: frontend/Dockerfile
             image: adibon/front_mlp:latest
-            koyeb_id: d928220f-e55d-4a56-ab25-8646203fbc27
+            koyeb_id: easy-dominica/front-mlp
           - name: backend
             context: backend
             dockerfile: backend/Dockerfile
             image: adibon/back_mlp:latest
-            koyeb_id: 722684c0-de7e-40a8-900b-0de8ebd87fd3
+            koyeb_id: soft-serena/back-mlp
     
     steps:
       - uses: actions/checkout@v4
