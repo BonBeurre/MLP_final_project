@@ -30,4 +30,4 @@ def test_predict_invalid_data():
     
 def test_invalid_http_method():
     response = client.get("/predict/")
-    assert response.status_code == 405  # Méthode non autorisée
+    assert response.status_code == 405  # Méthode pas autorisée
