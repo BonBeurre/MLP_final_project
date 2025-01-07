@@ -58,7 +58,7 @@ jobs:
           if [ "${{ matrix.language }}" = "python" ]; then
             pytest backend/tests/test_unit.py
           else
-            npm test
+            npm test --prefix frontend
           fi
           
       - name: Push to staging
