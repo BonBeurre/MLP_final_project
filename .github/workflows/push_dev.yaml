@@ -69,18 +69,18 @@ jobs:
       - name: Install Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser
+          sudo apt-get install -y google-chrome-stable
       
       - name: Build application
         run: |
-            npm install --prefix frontend
-            npm run build --prefix frontend
+            cd frontend
+            npm install
+            npm run build
         
       - name: Run tests
         run: |
-          export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-          export CHROME_BIN=/usr/bin/chromium-browser
-          npm test --prefix frontend e2e_test.js
+          cd frontend
+          npm test e2e_test.js
           
       - name: Push to main
         run: |
