@@ -32,7 +32,10 @@ function App() {
     };
 
     return (
+
+        
         <div>
+            
             <h1>Prédiction Iris</h1>
             <form onSubmit={handleSubmit}>
                 <input
@@ -66,7 +69,10 @@ function App() {
                 <button type="submit">Prédire</button>
             </form>
             {prediction && <h2>Prédiction : {prediction}</h2>}
+
+            
         </div>
+        
     );
 }
 
