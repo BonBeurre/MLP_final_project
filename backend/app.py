@@ -24,6 +24,10 @@ app.add_middleware(
 # Configurer l'URI MLflow pour DagsHub
 mlflow.set_tracking_uri("https://dagshub.com/djayos/my-first-repo.mlflow")
 
+# Authentification pour DagsHub
+os.environ["MLFLOW_TRACKING_USERNAME"] = "djayos"
+os.environ["MLFLOW_TRACKING_PASSWORD"] = "21998e1af3bfa82f989a91f83e26d6c3e072488d"
+
 # Charger le modèle enregistré comme "Production" dans le Model Registry
 model = mlflow.pyfunc.load_model("models:/IrisModelRegistry/Production")
 
