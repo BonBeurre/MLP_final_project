@@ -14,7 +14,7 @@ describe("E2E Test - Prédiction Iris", () => {
             .forBrowser('chrome')
             .setChromeOptions(options)
             .build();
-    });
+    }, 30000);
 
     afterAll(async () => {
         if (driver) {  // Check if driver exists before quitting
