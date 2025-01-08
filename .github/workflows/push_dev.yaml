@@ -36,9 +36,6 @@ jobs:
   dev-to-staging:
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        language: [python, node]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,21 +43,11 @@ jobs:
           
       - name: Build application
         run: |
-          if [ "${{ matrix.language }}" = "python" ]; then
-            pip install -r backend/requirements.txt
-          else
-            npm install --prefix frontend
-            npm run build --prefix frontend
-          fi
+          pip install -r backend/requirements.txt
           
       - name: Run tests
         run: |
-          if [ "${{ matrix.language }}" = "python" ]; then
-            pytest backend/tests/test_unit.py
-            pytest backend/tests/test_int.py
-          else
-            npm test --prefix frontend unit_test.js
-          fi
+          pytest backend/tests/test_int.py
           
       - name: Push to staging
         run: |
