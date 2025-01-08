@@ -10,10 +10,9 @@ from utils import is_correct_format
 app = FastAPI()
 
 origins = [
-    "https://easy-dominica-adibon-6ea94c08.koyeb.app",  # Your frontend origin
+    "https://easy-dominica-adibon-6ea94c08.koyeb.app",
 ]
 
-# Add CORS middleware to allow specific origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,14 +32,14 @@ os.environ["MLFLOW_TRACKING_PASSWORD"] = "21998e1af3bfa82f989a91f83e26d6c3e07248
 model = mlflow.pyfunc.load_model("models:/IrisModelRegistry/Production")
 
 
-# Endpoint pour la prédictionnb
+# Endpoint pour la prédiction
 @app.post("/predict/")
 def predict(data: dict):
     """
     Reçoit les données sous forme de JSON et retourne une prédiction.
     """
-    if not is_correct_format(data):  # Valider le format des données
+    if not is_correct_format(data):
         raise HTTPException(status_code=400, detail="Invalid input format")
-    df = pd.DataFrame([data])  # Convertir les données JSON en DataFrame
-    prediction = model.predict(df)  # Effectuer la prédiction
-    return {"prediction": prediction.tolist()}  # Retourner la prédiction
+    df = pd.DataFrame([data])
+    prediction = model.predict(df)
+    return {"prediction": prediction.tolist()}
